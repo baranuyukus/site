@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-5xl font-bold mb-8 text-center text-gray-800">Google MAPS SEO Koordinat Oluşturucu</h1>
+    
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-8 transition-transform duration-300 hover:scale-105">
+        <div class="p-6">
+            <h2 class="text-3xl font-semibold mb-4 text-indigo-700">Google Maps SEO ve Koordinat Oluşturma</h2>
+            <p class="text-gray-600 mb-4 leading-relaxed">
+                Çember Koordinat Oluşturucu, Google Maps SEO stratejinizi güçlendirmek için tasarlanmış özel bir araçtır. Bu araç, belirli bir merkez nokta etrafında çember şeklinde koordinatlar oluşturarak, Google Maps üzerindeki varlığınızı optimize etmenize yardımcı olur.
+            </p>
+            <p class="text-gray-600 mb-4 leading-relaxed">
+                Google Maps SEO, işletmenizin yerel aramalarda daha iyi sıralamalara ulaşmasını sağlar. Bu, potansiyel müşterilerin sizi daha kolay bulmasına ve işletmenize daha fazla trafik çekmesine yardımcı olur.
+            </p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+            <div class="p-6">
+                <h3 class="text-2xl font-semibold mb-3 text-indigo-700">Google Maps Alıntıları Nedir?</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Google Maps alıntıları, işletmenizin adı, adresi ve telefon numarasının (NAP) çeşitli çevrimiçi platformlarda tutarlı bir şekilde listelenmesidir. Bu alıntılar, işletmenizin güvenilirliğini artırır ve yerel SEO sıralamanızı iyileştirir.
+                </p>
+            </div>
+        </div>
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+            <div class="p-6">
+                <h3 class="text-2xl font-semibold mb-3 text-indigo-700">Neden Önemlidir?</h3>
+                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    <li>İşletme bilgilerinin doğruluğunu gösterir</li>
+                    <li>Yerel sıralamaları iyileştirir</li>
+                    <li>Fiziksel mağaza trafiğini artırır</li>
+                    <li>Çevrimiçi görünürlüğü artırır</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-indigo-100 shadow-lg rounded-lg overflow-hidden mb-8 transition-transform duration-300 hover:scale-105">
+        <div class="p-6">
+            <h3 class="text-2xl font-semibold mb-3 text-indigo-700">Çember Koordinat Oluşturucu Nasıl Yardımcı Olur?</h3>
+            <p class="text-gray-700 mb-4 leading-relaxed">
+                Aracımız, belirlediğiniz merkez nokta etrafında çember şeklinde koordinatlar oluşturur. Bu koordinatlar:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
+                <li>Google Maps'te işletmenizin görünürlüğünü artırır</li>
+                <li>Yerel SEO stratejinizi güçlendirir</li>
+                <li>Potansiyel müşterilerin sizi daha kolay bulmasını sağlar</li>
+                <li>İşletmenizin çevredeki varlığını optimize eder</li>
+            </ul>
+            <p class="text-gray-700 font-semibold">
+                {% if current_user.is_authenticated %}
+                    Hemen koordinat oluşturmaya başlayın ve Google Maps SEO stratejinizi güçlendirin!
+                {% else %}
+                    Hemen üye olun ve Google Maps SEO stratejinizi güçlendirmeye başlayın!
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <div class="text-center">
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('generate') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full inline-block transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                Koordinat Oluştur
+            </a>
+        {% else %}
+            <a href="{{ url_for('register') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-full inline-block transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                Hemen Üye Ol
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

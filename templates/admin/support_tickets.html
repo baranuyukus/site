@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Destek Talepleri Yönetimi</h1>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        {% if tickets %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Kullanıcı</th>
+                            <th class="px-4 py-2 text-left">Konu</th>
+                            <th class="px-4 py-2 text-left">Durum</th>
+                            <th class="px-4 py-2 text-left">Son Güncelleme</th>
+                            <th class="px-4 py-2 text-left">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in tickets %}
+                        <tr class="{% if loop.index % 2 == 0 %}bg-gray-100{% endif %}">
+                            <td class="border px-4 py-2">{{ ticket.user.username }}</td>
+                            <td class="border px-4 py-2">{{ ticket.subject }}</td>
+                            <td class="border px-4 py-2">{{ 'Açık' if ticket.status == 'open' else 'Kapalı' }}</td>
+                            <td class="border px-4 py-2">{{ ticket.updated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td class="border px-4 py-2">
+                                <a href="{{ url_for('view_ticket', ticket_id=ticket.id) }}" class="text-blue-500 hover:text-blue-700">Görüntüle</a>
+                                {% if ticket.status == 'open' %}
+                                <form action="{{ url_for('close_ticket', ticket_id=ticket.id) }}" method="POST" class="inline">
+                                    <button type="submit" class="text-red-500 hover:text-red-700 ml-2">Kapat</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-gray-600">Henüz destek talebi bulunmamaktadır.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
