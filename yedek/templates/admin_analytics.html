@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Admin Analizleri</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Genel İstatistikler</h2>
+            <p>Toplam Kullanıcı Sayısı: {{ data.total_users }}</p>
+            <p>Toplam Koordinat Sayısı: {{ data.total_coordinates }}</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Günlük Kredi Kullanımı ve Kazanç</h2>
+            <canvas id="creditUsageChart"></canvas>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Strateji Kullanımı</h2>
+            <canvas id="strategyUsageChart"></canvas>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">En Çok Koordinat Oluşturan Kullanıcılar</h2>
+            <canvas id="topUsersChart"></canvas>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Kullanıcı Kayıt İstatistikleri</h2>
+            <canvas id="userRegistrationsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Kredi Kullanımı ve Kazanç Grafiği
+    var creditUsageCtx = document.getElementById('creditUsageChart').getContext('2d');
+    new Chart(creditUsageCtx, {
+        type: 'line',
+        data: {
+            labels: {{ data.credit_usage|map(attribute='date')|list|tojson }},
+            datasets: [{
+                label: 'Kredi Kullanımı',
+                data: {{ data.credit_usage|map(attribute='credits')|list|tojson }},
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }, {
+                label: 'Kazanç (TL)',
+                data: {{ data.credit_usage|map(attribute='revenue')|list|tojson }},
+                borderColor: 'rgb(255, 99, 132)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Strateji Kullanımı Grafiği
+    var strategyUsageCtx = document.getElementById('strategyUsageChart').getContext('2d');
+    new Chart(strategyUsageCtx, {
+        type: 'pie',
+        data: {
+            labels: {{ data.strategy_usage|map(attribute='strategy')|list|tojson }},
+            datasets: [{
+                data: {{ data.strategy_usage|map(attribute='count')|list|tojson }},
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            }
+        }
+    });
+
+    // En Çok Koordinat Oluşturan Kullanıcılar Grafiği
+    var topUsersCtx = document.getElementById('topUsersChart').getContext('2d');
+    new Chart(topUsersCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ data.top_users|map(attribute='username')|list|tojson }},
+            datasets: [{
+                label: 'Oluşturulan Koordinat Sayısı',
+                data: {{ data.top_users|map(attribute='count')|list|tojson }},
+                backgroundColor: 'rgb(75, 192, 192)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Kullanıcı Kayıt İstatistikleri Grafiği
+    var userRegistrationsCtx = document.getElementById('userRegistrationsChart').getContext('2d');
+    new Chart(userRegistrationsCtx, {
+        type: 'line',
+        data: {
+            labels: {{ data.user_registrations|map(attribute='date')|list|tojson }},
+            datasets: [{
+                label: 'Yeni Kullanıcı Kayıtları',
+                data: {{ data.user_registrations|map(attribute='count')|list|tojson }},
+                borderColor: 'rgb(153, 102, 255)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

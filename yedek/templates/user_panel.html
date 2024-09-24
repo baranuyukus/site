@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Hoş Geldiniz, {{ user.username }}</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Kredi Bilgisi -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h2 class="text-lg leading-6 font-medium text-gray-900">Kredi Bilgisi</h2>
+                <div class="mt-2 max-w-xl text-sm text-gray-500">
+                    <p>Mevcut Krediniz: {{ user.credits }}</p>
+                </div>
+                <div class="mt-5">
+                    <a href="{{ url_for('add_credits') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Kredi Yükle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kredi Paketleri -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h2 class="text-lg leading-6 font-medium text-gray-900">Kredi Paketleri</h2>
+                <div class="mt-2 space-y-4">
+                    {% for package in credit_packages %}
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-500">{{ package.credits }} Kredi</span>
+                        <span class="text-sm font-medium text-gray-900">{{ package.price }} TL</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Son İşlemler -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Kredi Yüklemeleri</h2>
+        <div class="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul class="divide-y divide-gray-200">
+                {% for notification in payment_notifications %}
+                <li>
+                    <div class="px-4 py-4 sm:px-6">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-indigo-600 truncate">
+                                {{ notification.credits }} Kredi Yükleme
+                            </p>
+                            <div class="ml-2 flex-shrink-0 flex">
+                                <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {% if notification.status == 'pending' %}bg-yellow-100 text-yellow-800{% elif notification.status == 'approved' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                    {{ notification.status }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-2 sm:flex sm:justify-between">
+                            <div class="sm:flex">
+                                <p class="flex items-center text-sm text-gray-500">
+                                    {{ notification.amount }} TL
+                                </p>
+                            </div>
+                            <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                                <p>
+                                    {{ notification.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Koordinatlar -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Koordinatlarınız</h2>
+        <div class="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul class="divide-y divide-gray-200">
+                {% for coordinate in coordinates %}
+                <li>
+                    <div class="px-4 py-4 sm:px-6">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-indigo-600 truncate">{{ coordinate.name }}</p>
+                            <div class="ml-2 flex-shrink-0 flex">
+                                <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    {{ coordinate.num_points }} nokta
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-2 sm:flex sm:justify-between">
+                            <div class="sm:flex">
+                                <p class="flex items-center text-sm text-gray-500">
+                                    Merkez: {{ coordinate.center_lat }}, {{ coordinate.center_long }}
+                                </p>
+                            </div>
+                            <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                                <p class="mr-4">
+                                    Yarıçap: {{ coordinate.radius }} km
+                                </p>
+                                <a href="{{ url_for('download_coordinate', coordinate_id=coordinate.id) }}" class="text-indigo-600 hover:text-indigo-900">
+                                    İndir
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% set credit_packages = [
+    {'credits': 1, 'price': 35},
+    {'credits': 5, 'price': 150},
+    {'credits': 10, 'price': 250}
+] %}
+
+<!-- Kredi paketleri listesi -->
+<div class="mt-8">
+    <h2 class="text-xl font-semibold mb-4">Credit Packages</h2>
+    <ul class="space-y-2">
+        {% for package in credit_packages %}
+        <li>{{ package.credits }} Credit{% if package.credits != 1 %}s{% endif %} - {{ package.price }} TL</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

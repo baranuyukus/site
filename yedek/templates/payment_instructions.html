@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-4">
+    <div class="p-8">
+        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-1">Ödeme Talimatları</div>
+        <h2 class="block mt-1 text-lg leading-tight font-medium text-black">İşlem Kodunuz: {{ transaction_code }}</h2>
+        <p class="mt-2 text-gray-500">Lütfen bu kodu ödeme açıklamanıza eklemeyi unutmayın.</p>
+        
+        <div class="mt-4">
+            <p class="text-gray-700"><strong>Ödeme Tutarı:</strong> {{ amount }} TL</p>
+            <p class="text-gray-700"><strong>Ödeme Yöntemi:</strong> {{ payment_method }}</p>
+        </div>
+
+        <div class="mt-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+            <p class="font-bold">Ödeme Bilgileri</p>
+            {% if payment_method == 'eft' %}
+                <p>EFT: TR94 0004 6000 9788 8000 2798 45 (Alıcı: Savtekin Baran Üyükuş)</p>
+            {% else %}
+                <p>Papara: EKLENECEK (Ad Soyad: EKLENECEK)</p>
+            {% endif %}
+        </div>
+
+        <div class="mt-6">
+            <a href="{{ url_for('user_panel') }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                Kullanıcı Paneline Dön
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h1 class="text-2xl font-bold mb-4">Admin Panel</h1>
+        
+        <!-- Veritabanı Yedekleme ve Geri Yükleme -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-3">Veritabanı Yönetimi</h2>
+            <form action="{{ url_for('backup_database') }}" method="GET" class="inline">
+                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-2 inline-block">Veritabanını Yedekle</button>
+            </form>
+            
+            <form action="{{ url_for('restore_database') }}" method="POST" enctype="multipart/form-data" class="mt-4">
+                <input type="file" name="database_file" accept=".db" class="mb-2">
+                <button type="submit" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Veritabanını Geri Yükle</button>
+            </form>
+        </div>
+
+        <!-- Başlangıç Kredi Miktarı Ayarı -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-3">Başlangıç Kredi Miktarı</h2>
+            <form action="{{ url_for('admin_panel') }}" method="POST" class="inline-flex">
+                <input type="number" name="initial_credits" value="{{ initial_credits }}" class="shadow appearance-none border rounded w-20 py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2">
+                <input type="submit" value="Güncelle" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
+            </form>
+        </div>
+
+        <!-- Kullanıcı Listesi -->
+        <h2 class="text-xl font-semibold mb-3">Kullanıcılar</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="px-4 py-2">Kullanıcı Adı</th>
+                        <th class="px-4 py-2">Krediler</th>
+                        <th class="px-4 py-2">şlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="{% if loop.index % 2 == 0 %}bg-gray-100{% endif %}">
+                        <td class="border px-4 py-2">{{ user.username }}</td>
+                        <td class="border px-4 py-2">{{ user.credits }}</td>
+                        <td class="border px-4 py-2">
+                            <form action="{{ url_for('update_credits', user_id=user.id) }}" method="POST" class="inline-flex">
+                                <input type="number" name="credits" value="{{ user.credits }}" class="shadow appearance-none border rounded w-20 py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2">
+                                <input type="submit" value="Güncelle" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Ödeme Bildirimleri -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-8">
+        <h2 class="text-xl font-semibold mb-3">Ödeme Bildirimleri</h2>
+        {% if notifications %}
+        <table class="min-w-full bg-white">
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 border-b">Kullanıcı</th>
+                    <th class="py-2 px-4 border-b">Miktar</th>
+                    <th class="py-2 px-4 border-b">Kredi</th>
+                    <th class="py-2 px-4 border-b">Ödeme Yöntemi</th>
+                    <th class="py-2 px-4 border-b">İşlem Kodu</th>
+                    <th class="py-2 px-4 border-b">Tarih</th>
+                    <th class="py-2 px-4 border-b">İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for notification in notifications %}
+                <tr>
+                    <td class="py-2 px-4 border-b">{{ notification.user.username }}</td>
+                    <td class="py-2 px-4 border-b">{{ notification.amount }} TL</td>
+                    <td class="py-2 px-4 border-b">{{ notification.credits }}</td>
+                    <td class="py-2 px-4 border-b">{{ notification.payment_method }}</td>
+                    <td class="py-2 px-4 border-b">{{ notification.transaction_code }}</td>
+                    <td class="py-2 px-4 border-b">{{ notification.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td class="py-2 px-4 border-b">
+                        <form action="{{ url_for('admin_approve_payment', notification_id=notification.id) }}" method="post">
+                            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">
+                                Onayla
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-gray-600">Henüz onaylanmamış ödeme bildirimi bulunmamaktadır.</p>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex">
+    <!-- Sol bilgi paneli -->
+    <div class="w-1/4 p-4 bg-gray-100 rounded-lg mr-4">
+        <h3 class="text-lg font-semibold mb-2">Bilgiler ve Örnekler</h3>
+        <ul class="list-disc list-inside space-y-2">
+            <li>Google Maps linki: https://www.google.com/maps?q=41.0082,28.9784</li>
+            <li>İsim: İstanbul Tarihi Yarımada</li>
+            <li>Açıklama: Tarihi ve turistik bölge</li>
+            <li>Merkez Enlem: 41.0082</li>
+            <li>Merkez Boylam: 28.9784</li>
+            <li>Yarıçap: 2 km (şehir merkezi için)</li>
+            <li>Koordinat Sayısı: 5000 (orta yoğunluk)</li>
+        </ul>
+    </div>
+
+    <!-- Orta form bölümü -->
+    <div class="w-1/2">
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+            <h1 class="text-2xl font-bold mb-6 text-center">Koordinat Oluştur</h1>
+            <form method="POST" id="generateForm">
+                {{ form.hidden_tag() }}
+                <div class="mb-4">
+                    {{ form.google_maps_link.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                    <div class="flex">
+                        {{ form.google_maps_link(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder="Google Maps linkini yapıştırın") }}
+                        <button type="button" id="fetchDataBtn" class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Bilgileri Çek
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    {{ form.name.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                    {{ form.name(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                </div>
+                <div class="mb-4">
+                    {{ form.description.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                    {{ form.description(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", rows="6") }}
+                </div>
+                {% for field in form if field.name not in ['csrf_token', 'submit', 'google_maps_link', 'name', 'description'] %}
+                    <div class="mb-4">
+                        {{ field.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                        {{ field(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                    </div>
+                {% endfor %}
+                {{ form.submit(class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full") }}
+            </form>
+        </div>
+    </div>
+
+    <!-- Sağ bilgi paneli -->
+    <div class="w-1/4 p-4 bg-gray-100 rounded-lg ml-4">
+        <h3 class="text-lg font-semibold mb-2">Önemli Bilgiler</h3>
+        <ul class="list-disc list-inside space-y-2">
+            <li>Bir Google Maps'te maksimum 20.000 adet koordinat olabilir.</li>
+            <li>20.000 adet koordinat oluşturmak için 1 kredi harcanır.</li>
+            <li>25.000 koordinat için 2 kredi harcanır.</li>
+            <li>Her 20.000 adet koordinat için 1 kredi harcanır.</li>
+        </ul>
+        <h4 class="text-md font-semibold mt-4 mb-2">Yarıçap Önerileri:</h4>
+        <ul class="list-disc list-inside space-y-2">
+            <li>Küçük alan (örn. park): 0.5 - 1 km</li>
+            <li>Şehir merkezi: 2 - 5 km</li>
+            <li>Büyük şehir: 10 - 20 km</li>
+            <li>Bölge: 50 - 100 km</li>
+        </ul>
+        <h4 class="text-md font-semibold mt-4 mb-2">Koordinat Sayısı Önerileri:</h4>
+        <ul class="list-disc list-inside space-y-2">
+            <li>Düşük yoğunluk: 1.000 - 5.000</li>
+            <li>Orta yoğunluk: 5.000 - 10.000</li>
+            <li>Yüksek yoğunluk: 10.000 - 20.000</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+document.getElementById('fetchDataBtn').addEventListener('click', function() {
+    var link = document.getElementById('google_maps_link').value;
+    fetch('/parse_google_maps_link', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({link: link}),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('name').value = data.name;
+            document.getElementById('center_lat').value = data.lat;
+            document.getElementById('center_long').value = data.lng;
+        } else {
+            alert('Link ayrıştırılamadı. Lütfen bilgileri manuel olarak girin.');
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Bir hata oluştu. Lütfen bilgileri manuel olarak girin.');
+    });
+});
+</script>
+{% endblock %}

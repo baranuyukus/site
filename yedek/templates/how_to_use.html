@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Nasıl Kullanılır?</h1>
+
+    <div class="mb-8">
+        <p class="mb-4">Bu uygulama, Google Maps üzerinde koordinat oluşturmanıza yardımcı olur. İşte temel kullanım adımları:</p>
+        <ol class="list-decimal list-inside space-y-2">
+            <li>Hesap oluşturun veya giriş yapın.</li>
+            <li>"Koordinat Oluştur" sayfasına gidin.</li>
+            <li>Gerekli bilgileri doldurun (merkez koordinatlar, yarıçap, nokta sayısı vb.).</li>
+            <li>Oluştur butonuna tıklayın ve koordinatlarınızı indirin.</li>
+            <li>Oluşturduğunuz koordinatları Google My Maps'te kullanabilirsiniz.</li>
+            <li>MyMaps'e girin ve yeni bir harita oluşturun.</li>
+            <li>Sol taraftan Katman Ekle->İçeri Aktar adımları ile dosyaları sırasıyla her bir katmana yükleyin</li>
+            <li>Ardından pinleriniz hazır!</li>
+        </ol>
+    </div>
+
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Detaylı Kullanım Videosu</h2>
+        <div class="aspect-w-16 aspect-h-9">
+            <iframe class="w-full h-full" src="https://www.youtube.com/embed/hmDuZB8ze6o" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="text-2xl font-bold mb-4">Sıkça Sorulan Sorular</h2>
+        <ul class="list-disc list-inside space-y-2">
+            <li>Kredi nasıl satın alabilirim?</li>
+            <li>Oluşturulan koordinatları nasıl kullanabilirim?</li>
+            <li>Maksimum kaç koordinat oluşturabilirim?</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

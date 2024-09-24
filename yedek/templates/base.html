@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps SEO-Pin Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <nav class="bg-black shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="{{ url_for('index') }}" class="text-white text-xl font-bold">Google Maps SEO-Pin Generator</a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                        <a href="{{ url_for('index') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="{{ url_for('admin_panel') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Admin Panel</a>
+                        <a href="{{ url_for('admin_analytics') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Analytics</a>
+                        <a href="{{ url_for('logout') }}" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black bg-white hover:bg-gray-200">Logout</a>
+                    {% elif current_user.is_authenticated %}
+                        <a href="{{ url_for('user_panel') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">User Panel</a>
+                        <a href="{{ url_for('generate') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Generate Coordinates</a>
+                        <a href="{{ url_for('how_to_use') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">How to Use</a>
+                        <span class="text-gray-300 px-3 py-2 rounded-md text-sm font-medium">
+                            Remaining Credits: {{ current_user.credits }}
+                            <a href="{{ url_for('add_credits') }}" class="ml-2 text-yellow-400 hover:text-yellow-300">
+                                <i class="fas fa-coins"></i>
+                            </a>
+                        </span>
+                        <a href="{{ url_for('logout') }}" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black bg-white hover:bg-gray-200">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Login</a>
+                        <a href="{{ url_for('register') }}" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black bg-white hover:bg-gray-200">Register</a>
+                        <a href="{{ url_for('how_to_use') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">How to Use</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 px-4 py-3 rounded-md {% if category == 'error' %}bg-red-100 border border-red-400 text-red-700{% elif category == 'success' %}bg-green-100 border border-green-400 text-green-700{% else %}bg-blue-100 border border-blue-400 text-blue-700{% endif %}" role="alert">
+                        <p class="font-medium">{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
